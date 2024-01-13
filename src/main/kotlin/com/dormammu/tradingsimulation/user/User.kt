@@ -4,19 +4,19 @@ import jakarta.persistence.*
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-@Entity
+@Entity(name = "users")
 class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
-    @Column
+    @Column(nullable = false)
     val name: String? = null,
 
     @Column
     var email: String = "",
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     var vendor: Vender = Vender.EMAIL,
 
@@ -27,10 +27,10 @@ class User(
     @Column
     var brith: LocalDate,
 
-    @Column
+    @Column(nullable = false)
     val createdAt: LocalDateTime? = null,
 
-    @Column
+    @Column(nullable = false)
     var updatedAt: LocalDateTime? = LocalDateTime.now(),
 )
 {

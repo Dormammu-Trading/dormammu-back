@@ -1,13 +1,18 @@
 package com.dormammu.tradingsimulation.user
 
 import com.dormammu.tradingsimulation.system.EnvValueConfig
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/user")
-class UserController(private val envValueConfig: EnvValueConfig) {
+class UserController(
+        private val envValueConfig: EnvValueConfig,
+        private val userRepository: UserRepository
+    )
+{
 
     @GetMapping("/info")
     fun getInfo(): String {
@@ -16,5 +21,11 @@ class UserController(private val envValueConfig: EnvValueConfig) {
         val dbPassword = envValueConfig.getDbPassword()
 
         return "DB URL: $dbUrl, DB USERNAME : $dbUserName, DB PASSWORD: $dbPassword"
+    }
+
+    @GetMapping("/findAll")
+    fun getAllUsers(): ResponseEntity<MutableList<User>> {
+        val users = userRepository.findAll()
+        return ResponseEntity.ok(users)
     }
 }
