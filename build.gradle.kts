@@ -25,6 +25,9 @@ repositories {
 }
 
 dependencies {
+	implementation("io.github.cdimascio:dotenv-kotlin:6.4.0")
+	implementation("org.postgresql:postgresql:42.6.0")
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
