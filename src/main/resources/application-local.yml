@@ -2,8 +2,9 @@ server:
   port: 8000
   context-path: /myapp
 spring:
-  profiles:
-    active: local
+  config:
+    activate:
+      on-profile: local
   datasource:
     url: ${DB_URL}
     username: ${DB_USERNAME}

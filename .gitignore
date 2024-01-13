@@ -67,4 +67,5 @@ hs_err_pid*
 
 .idea
 .env
-
+.env.properties
+src/main/resources/env.properties
