@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource
 
 @Configuration
 @PropertySource("classpath:env.properties")
-class EnvValueConfig {
+class DbEnvConfig {
 
     @Value("\${DB_URL}")
     private lateinit var dbUrl: String
