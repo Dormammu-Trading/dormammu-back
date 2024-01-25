@@ -1,8 +1,8 @@
 package com.dormammu.tradingsimulation.kis
 
 data class ApiToken(
-    val accessToken: String,
-    val access_token_token_expired: String,
-    val token_type: String,
-    val expires_in: String
+    var accessToken: String,
+    var access_token_token_expired: String,
+    var token_type: String,
+    var expires_in: String
 )
