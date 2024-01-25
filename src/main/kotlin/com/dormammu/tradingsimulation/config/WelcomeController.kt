@@ -1,4 +1,4 @@
-package com.dormammu.tradingsimulation.system
+package com.dormammu.tradingsimulation.config
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController

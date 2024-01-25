@@ -1,4 +1,4 @@
-package com.dormammu.tradingsimulation.system
+package com.dormammu.tradingsimulation.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration

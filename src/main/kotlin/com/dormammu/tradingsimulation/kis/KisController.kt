@@ -1,7 +1,7 @@
 package com.dormammu.tradingsimulation.kis
 
 import com.dormammu.tradingsimulation.kis.domain.KisApiUrl
-import com.dormammu.tradingsimulation.system.KisApiEnvConfig
+import com.dormammu.tradingsimulation.config.KisApiEnvConfig
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.http.MediaType
