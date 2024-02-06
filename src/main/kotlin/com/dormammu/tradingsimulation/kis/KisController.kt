@@ -1,7 +1,8 @@
 package com.dormammu.tradingsimulation.kis
 
-import com.dormammu.tradingsimulation.kis.domain.KisApiUrl
 import com.dormammu.tradingsimulation.config.KisApiEnvConfig
+import com.dormammu.tradingsimulation.kis.constant.KisApiUrl
+import com.dormammu.tradingsimulation.kis.domain.ApiTokenResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.http.MediaType
@@ -25,45 +26,42 @@ class KisController(
     fun getApiToken(): String {
         val kisApiKey = kisApiEnvConfig.getKisApiKey()
         val kisSecretApiKey = kisApiEnvConfig.getKisSecretApiKey()
-        val result = HashMap<String, Any>()
         var jsonInString = ""
         try {
             val bodyMap = HashMap<String, String>()
             bodyMap.put("grant_type", "client_credentials")
             bodyMap.put("appkey", kisApiKey)
-            bodyMap.put("appsecret", kisSecretApiKey)
+            bodyMap.put("secretkey", kisSecretApiKey)
 
+            logger.info { "api token 발급 시작"   }
 
             // POST 요청 보내기
             val response = webClient.post()
-                .uri(KisApiUrl.API_TOKEN.url)
+                .uri(KisApiUrl.GET_API_TOKEN.url)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(bodyMap))
                 .retrieve()
-                .bodyToMono(ApiToken::class.java)
+                .bodyToMono(ApiTokenResponse::class.java)
                 .block()
 
 
-            logger.info { "response accessToken: ${response?.accessToken},  access_token_token_expired: ${response?.access_token_token_expired} "   }
-
-
-
-//            result.put("statusCode", resultMap.statusCode)
-//            result.put("header", resultMap.headers)
-//            resultMap.body?.let { result.put("body", it) }
+            logger.info { "response accessToken: ${response?.approvalKey}"   }
 
             val mapper = ObjectMapper()
             jsonInString = mapper.writeValueAsString(response)
 
+            response?.let { kisApiEnvConfig.setKisToken(it.approvalKey) }
+
         } catch (e: Exception) {
             when (e) {
                 is HttpClientErrorException, is HttpServerErrorException -> {
-                    println(e.toString())
+                    println("http error 인 경우: $e")
                 }else ->{
-                    println(e.toString())
+                    println("http error가 아닌 경우: $e")
                 }
             }
         }
+
 
         return "result body: $jsonInString"
     }
