@@ -7,6 +7,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 data class ApiTokenRequest(
     var grantType: String,
     var appkey: String,
-    var secretKey: String,
+    var secretkey: String,
 ){
 }

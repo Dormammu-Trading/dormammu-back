@@ -2,6 +2,7 @@ package com.dormammu.tradingsimulation.kis
 
 import com.dormammu.tradingsimulation.config.KisApiEnvConfig
 import com.dormammu.tradingsimulation.kis.constant.KisApiUrl
+import com.dormammu.tradingsimulation.kis.domain.ApiTokenRequest
 import com.dormammu.tradingsimulation.kis.domain.ApiTokenResponse
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -11,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.HttpServerErrorException
-import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 
 private val logger = KotlinLogging.logger {}
@@ -24,22 +24,20 @@ class KisController(
 ) {
     @GetMapping("/api-token")
     fun getApiToken(): String {
-        val kisApiKey = kisApiEnvConfig.getKisApiKey()
-        val kisSecretApiKey = kisApiEnvConfig.getKisSecretApiKey()
         var jsonInString = ""
         try {
-            val bodyMap = HashMap<String, String>()
-            bodyMap.put("grant_type", "client_credentials")
-            bodyMap.put("appkey", kisApiKey)
-            bodyMap.put("secretkey", kisSecretApiKey)
-
+            val body = ApiTokenRequest(
+                "client_credentials",
+                kisApiEnvConfig.getKisApiKey(),
+                kisApiEnvConfig.getKisSecretApiKey()
+            )
             logger.info { "api token 발급 시작"   }
 
             // POST 요청 보내기
             val response = webClient.post()
                 .uri(KisApiUrl.GET_API_TOKEN.url)
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(bodyMap))
+                .bodyValue(body)
                 .retrieve()
                 .bodyToMono(ApiTokenResponse::class.java)
                 .block()
