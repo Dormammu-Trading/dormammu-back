@@ -1,13 +1,6 @@
 package com.dormammu.tradingsimulation.kis.foreign.domain
 
 data class ForeignStockCurrentTradedPrice(
-    val rt_cd: String,
-    val msg_cd: String,
-    val msg1: String,
-    val output: Output
-)
-
-data class Output(
     val rsym: String,
     val zdiv: String,
     val base: String,

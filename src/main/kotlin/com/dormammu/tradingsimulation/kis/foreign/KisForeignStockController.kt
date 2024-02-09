@@ -1,7 +1,8 @@
 package com.dormammu.tradingsimulation.kis.foreign
 
 import com.dormammu.tradingsimulation.kis.constant.KisApiUrl
-import com.dormammu.tradingsimulation.kis.foreign.domain.ForeignStockCurrentTradedPrice
+import com.dormammu.tradingsimulation.kis.foreign.domain.ForeignStockCurrentTradedPriceRequest
+import com.dormammu.tradingsimulation.kis.foreign.domain.ForeignStockCurrentTradedPriceResponse
 import com.dormammu.tradingsimulation.kis.foreign.domain.StockInfo
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -20,19 +21,30 @@ class KisForeignStockController(
     private val webClient: WebClient
 ){
     @PostMapping("/price")
-    fun getForeignStockCurrentTradedPrice(@RequestBody stockInfo: StockInfo): ForeignStockCurrentTradedPrice? {
+    fun getForeignStockCurrentTradedPrice(@RequestBody stockInfo: StockInfo): ForeignStockCurrentTradedPriceResponse? {
         logger.info { "stockInfo : $stockInfo "}
 
-        val foreignStockCurrentTradedPrice = webClient.post()
-            .uri(KisApiUrl.CURRENT_TRADED_PRICE.url)
-            .bodyValue(stockInfo)
+        val stockInfo = ForeignStockCurrentTradedPriceRequest(
+            "",
+            stockInfo.EXCD,
+            stockInfo.SYMB
+        )
+
+        val foreignStockCurrentTradedPrice = webClient.get()
+            .uri { builder ->
+                builder.path(KisApiUrl.CURRENT_TRADED_PRICE.url)
+                    .queryParam("AUTH", stockInfo.AUTH)
+                    .queryParam("EXCD", stockInfo.EXCD)
+                    .queryParam("SYMB", stockInfo.SYMB)
+                    .build()
+            }
             .retrieve()
-            .bodyToMono(String::class.java)
+            .bodyToMono(ForeignStockCurrentTradedPriceResponse::class.java)
             .block()
 
         logger.info { "foreignStockCurrentTradedPrice : $foreignStockCurrentTradedPrice "}
 
-        return objectMapper.readValue(foreignStockCurrentTradedPrice, ForeignStockCurrentTradedPrice::class.java)
+        return foreignStockCurrentTradedPrice
     }
 
 }
