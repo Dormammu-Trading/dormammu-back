@@ -1,4 +1,4 @@
-package com.dormammu.tradingsimulation.system
+package com.dormammu.tradingsimulation.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource
 
 @Configuration
 @PropertySource("classpath:env.properties")
-class EnvValueConfig {
+class DbEnvConfig {
 
     @Value("\${DB_URL}")
     private lateinit var dbUrl: String
