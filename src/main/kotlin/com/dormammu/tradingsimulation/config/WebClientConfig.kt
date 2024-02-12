@@ -6,9 +6,9 @@ import io.netty.handler.timeout.ReadTimeoutHandler
 import io.netty.handler.timeout.WriteTimeoutHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.DependsOn
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
 import org.springframework.web.reactive.function.client.WebClient
-import org.springframework.web.util.DefaultUriBuilderFactory
 import reactor.netty.Connection
 import reactor.netty.http.client.HttpClient
 import reactor.netty.resources.ConnectionProvider
@@ -17,25 +17,27 @@ import java.util.concurrent.TimeUnit
 
 private val logger = KotlinLogging.logger {}
 
-@Configuration
-class WebClientConfig {
 
-    val factory: DefaultUriBuilderFactory = DefaultUriBuilderFactory()
-    val httpClient: HttpClient = HttpClient.create()
-        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000); // 10초
+@DependsOn(value = ["KisApiToken"])
+@Configuration
+class WebClientConfig(
+    val kisApiEnvConfig: KisApiEnvConfig
+) {
 
     @Bean
-    fun webClient(): WebClient = WebClient.builder()
-        .clientConnector(
-            ReactorClientHttpConnector(HttpClient.create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
-                .doOnConnected { connection: Connection ->
-                    connection.addHandlerLast(ReadTimeoutHandler(10000, TimeUnit.MILLISECONDS))
-                    connection.addHandlerLast(WriteTimeoutHandler(10000, TimeUnit.MILLISECONDS))
-                })
-        )
-
-        .build()
+    fun webClient(): WebClient {
+        val webClient = WebClient.builder()
+            .clientConnector(
+                ReactorClientHttpConnector(HttpClient.create()
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+                    .doOnConnected { connection: Connection ->
+                        connection.addHandlerLast(ReadTimeoutHandler(10000, TimeUnit.MILLISECONDS))
+                        connection.addHandlerLast(WriteTimeoutHandler(10000, TimeUnit.MILLISECONDS))
+                    })
+            ).defaultHeader("Authorization", "Bearer ${kisApiEnvConfig.kisToken}").build()
+        logger.info { "WebClient 생성 Success" }
+        return webClient
+    }
 
     @Bean
     fun connectionProvider(): ConnectionProvider {

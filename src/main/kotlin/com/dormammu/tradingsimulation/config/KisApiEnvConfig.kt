@@ -1,56 +1,50 @@
 package com.dormammu.tradingsimulation.config
 
+import com.dormammu.tradingsimulation.config.dto.KisApiEnv
 import com.dormammu.tradingsimulation.kis.constant.KisApiUrl
 import com.dormammu.tradingsimulation.kis.domain.ApiTokenRequest
 import com.dormammu.tradingsimulation.kis.domain.ApiTokenResponse
 import io.github.oshai.kotlinlogging.KotlinLogging
-import jakarta.annotation.PostConstruct
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource
 import org.springframework.http.MediaType
-import org.springframework.web.client.HttpClientErrorException
-import org.springframework.web.client.HttpServerErrorException
 import org.springframework.web.reactive.function.client.WebClient
 
 private val logger = KotlinLogging.logger {}
-@Configuration
+
+@Configuration()
 @PropertySource("classpath:env.properties")
-class KisApiEnvConfig(
-    private val webClient: WebClient
-) {
+class KisApiEnvConfig() {
 
-    @PostConstruct
-    fun postInitialize(){
-        try {
-            val body = ApiTokenRequest(
-                "client_credentials",
-                getKisApiKey(),
-                getKisSecretApiKey()
-            )
+    @Bean(name = ["KisApiToken"])
+    fun KisApiEnv(): KisApiEnv  {
+        logger.info { "Kis Api Config Post init" }
 
-            // POST 요청 보내기
-            val response = webClient.post()
-                .uri(KisApiUrl.GET_API_TOKEN.url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(body)
-                .retrieve()
-                .bodyToMono(ApiTokenResponse::class.java)
-                .block()
+        val webClient: WebClient = WebClient.create()
+        lateinit var token: String
+        val body = ApiTokenRequest(
+            "client_credentials",
+            getKisApiKey(),
+            getKisSecretApiKey()
+        )
 
-            logger.info { "KIS API TOKEN 발급 Success"   }
+        // POST 요청 보내기
+        val response = webClient.post()
+            .uri(KisApiUrl.GET_API_TOKEN.url)
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(body)
+            .retrieve()
+            .bodyToMono(ApiTokenResponse::class.java)
+            .block()
 
-            response?.let { setKisToken(it.approvalKey) }
-
-        } catch (e: Exception) {
-            when (e) {
-                is HttpClientErrorException, is HttpServerErrorException -> {
-                    println("http error 인 경우: $e")
-                }else ->{
-                println("http error가 아닌 경우: $e")
-            }
-            }
+        if (response != null) {
+            token = response.approvalKey
+            setKisToken(token)
         }
+        logger.info { "KIS API TOKEN 발급 Success $token" }
+        return KisApiEnv(kisApiKey, kisSecretApiKey, token)
     }
 
     @Value("\${KIS_API_KEY}")
@@ -69,7 +63,7 @@ class KisApiEnvConfig(
     val kisToken: String
         get() = _kisToken
 
-    fun setKisToken(kisToken : String) {
+    fun setKisToken(kisToken: String) {
         _kisToken = kisToken
     }
 
