@@ -34,7 +34,13 @@ class WebClientConfig(
                         connection.addHandlerLast(ReadTimeoutHandler(10000, TimeUnit.MILLISECONDS))
                         connection.addHandlerLast(WriteTimeoutHandler(10000, TimeUnit.MILLISECONDS))
                     })
-            ).defaultHeader("Authorization", "Bearer ${kisApiEnvConfig.kisToken}").build()
+            )
+            .baseUrl("https://openapi.koreainvestment.com:9443")
+            .defaultHeader("Authorization", "Bearer ${kisApiEnvConfig.kisToken}")
+            .defaultHeader("appKey", kisApiEnvConfig.getKisApiKey())
+            .defaultHeader("appSecret", kisApiEnvConfig.getKisSecretApiKey())
+            .defaultHeader("Content-Type", "application/json; charset=utf-8")
+            .build()
         logger.info { "WebClient 생성 Success" }
         return webClient
     }

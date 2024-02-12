@@ -43,12 +43,12 @@ class KisController(
                 .block()
 
 
-            logger.info { "response accessToken: ${response?.approvalKey}"   }
+            logger.info { "response accessToken: ${response?.accessToken}"   }
 
             val mapper = ObjectMapper()
             jsonInString = mapper.writeValueAsString(response)
 
-            response?.let { kisApiEnvConfig.setKisToken(it.approvalKey) }
+            response?.let { kisApiEnvConfig.setKisToken(it.accessToken) }
 
         } catch (e: Exception) {
             when (e) {
@@ -59,7 +59,6 @@ class KisController(
                 }
             }
         }
-
 
         return "result body: $jsonInString"
     }

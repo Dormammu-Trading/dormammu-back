@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class ApiTokenResponse(
-    var approvalKey: String,
+    val accessToken: String,
+    val accessTokenTokenExpired: String,
+    val tokenType: String,
+    val expiresIn: Int,
 ){
 }

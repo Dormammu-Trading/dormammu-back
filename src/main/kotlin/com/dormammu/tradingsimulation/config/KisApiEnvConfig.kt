@@ -40,7 +40,7 @@ class KisApiEnvConfig() {
             .block()
 
         if (response != null) {
-            token = response.approvalKey
+            token = response.accessToken
             setKisToken(token)
         }
         logger.info { "KIS API TOKEN 발급 Success $token" }

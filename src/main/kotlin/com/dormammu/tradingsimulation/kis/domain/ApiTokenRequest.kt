@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 data class ApiTokenRequest(
-    var grantType: String,
-    var appkey: String,
-    var secretkey: String,
+    val grantType: String,
+    val appkey: String,
+    val appsecret: String,
 ){
 }
