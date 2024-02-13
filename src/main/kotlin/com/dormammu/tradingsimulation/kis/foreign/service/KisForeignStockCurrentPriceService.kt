@@ -1,27 +1,24 @@
-package com.dormammu.tradingsimulation.kis.foreign.controller
+package com.dormammu.tradingsimulation.kis.foreign.service
 
 import com.dormammu.tradingsimulation.kis.constant.KisApiUrl
+import com.dormammu.tradingsimulation.kis.foreign.domain.StockInfo
 import com.dormammu.tradingsimulation.kis.foreign.dto.ForeignStockCurrentTradedPriceRequest
 import com.dormammu.tradingsimulation.kis.foreign.dto.ForeignStockCurrentTradedPriceResponse
-import com.dormammu.tradingsimulation.kis.foreign.domain.StockInfo
-import com.fasterxml.jackson.databind.ObjectMapper
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.http.HttpHeaders
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.stereotype.Service
 import org.springframework.web.reactive.function.client.WebClient
 
+
 private val logger = KotlinLogging.logger {}
-@RestController
-@RequestMapping("/kis/foreign-stock")
-class KisForeignStockController(
-    private val objectMapper: ObjectMapper,
+
+@Service
+class KisForeignStockCurrentPriceService(
     private val webClient: WebClient
-){
-    @PostMapping("/price")
-    fun getForeignStockCurrentTradedPrice(@RequestBody stockInfo: StockInfo): ForeignStockCurrentTradedPriceResponse? {
+) {
+
+    fun getForeignStockCurrentPrice(stockInfo: StockInfo): ForeignStockCurrentTradedPriceResponse? {
+
         logger.info { "stockInfo : $stockInfo "}
 
         val stockInfo = ForeignStockCurrentTradedPriceRequest(
@@ -50,5 +47,6 @@ class KisForeignStockController(
 
         return foreignStockCurrentTradedPrice
     }
+
 
 }

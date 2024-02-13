@@ -1,4 +1,4 @@
-package com.dormammu.tradingsimulation.kis.foreign.domain
+package com.dormammu.tradingsimulation.kis.foreign.dto
 
 data class ForeignStockCurrentTradedPriceRequest(
     val AUTH: String,
