@@ -4,70 +4,51 @@ import com.dormammu.tradingsimulation.kis.foreign.domain.StockInfo
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.spring.SpringListener
-import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
+import io.kotest.matchers.shouldNotBe
+import org.junit.jupiter.api.DisplayName
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment
+import org.springframework.test.context.ContextConfiguration
 
 private val logger = KotlinLogging.logger {}
 
+
+@ContextConfiguration()
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-class KisForeignStockCurrentPriceServiceTest : BehaviorSpec({
+@DisplayName("해외주식 현재가 API TEST")
+class KisForeignStockCurrentPriceServiceTest(
+    kisForeignStockCurrentPriceService: KisForeignStockCurrentPriceService
+) : BehaviorSpec({
 
-        logger.info { "given start" }
-
-
-
-
-
-
-//        val webClient = mockk<WebClient>()
-//        val foreignStockCurrentPriceService = KisForeignStockCurrentPriceService(webClient)
-//
-//        val stockInfo = StockInfo(
-//            "NAS",
-//            "TSLA"
-//        )
-//        val tslaPrice = foreignStockCurrentPriceService.getForeignStockCurrentPrice(stockInfo)
-//
-//        logger.info { tslaPrice }
-
-}) {
-
-    override fun listeners() = listOf(SpringListener)
-
-    @Autowired
-    private lateinit var kisForeignStockCurrentPriceService: KisForeignStockCurrentPriceService
-
-
-
-    init {
-        logger.info { "init start" }
-
-        given("calculate") {
-            val expression = "1 + 2"
-            `when`("1과 2를 더하면") {
-                val result = 1 + 2
-                then("3이 반환된다") {
-                    result shouldBe 3
-                }
+    given("정상 입력") {
+        val stockInfo = StockInfo(
+            "NAS",
+            "TSLA"
+        )
+        When("해외 주식 현재가 Kis API 호출") {
+            val foreignStockCurrentPrice = kisForeignStockCurrentPriceService.getForeignStockCurrentPrice(stockInfo)
+            then("정상 응답한다"){
+                logger.info { "$foreignStockCurrentPrice" }
+                foreignStockCurrentPrice!!.rtCd shouldBe "0"
+                foreignStockCurrentPrice.output!!.rsym shouldNotBe ""
             }
         }
     }
 
-    @Test
-    fun getForeignStockCurrentPrice(){
-        logger.info { "init start" }
+    given("필수값 누락된 입력") {
         val stockInfo = StockInfo(
-
-            "NAS",
-            "TSLA"
+            "",
+            ""
         )
-
-        val foreignStockCurrentPrice = kisForeignStockCurrentPriceService.getForeignStockCurrentPrice(stockInfo)
-        logger.info { "$foreignStockCurrentPrice" }
+        When("해외 주식 현재가 Kis API 호출") {
+            val foreignStockCurrentPrice = kisForeignStockCurrentPriceService.getForeignStockCurrentPrice(stockInfo)
+            then("정상 응답한다"){
+                logger.info { "$foreignStockCurrentPrice" }
+                foreignStockCurrentPrice!!.rtCd shouldBe "0"
+                foreignStockCurrentPrice.output!!.rsym shouldBe ""
+            }
+        }
     }
-
+}) {
 
 }

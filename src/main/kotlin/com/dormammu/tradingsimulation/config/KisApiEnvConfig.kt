@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
+import reactor.util.retry.Retry
+import java.time.Duration
 
 private val logger = KotlinLogging.logger {}
 
@@ -37,6 +39,7 @@ class KisApiEnvConfig() {
             .bodyValue(body)
             .retrieve()
             .bodyToMono(ApiTokenResponse::class.java)
+            .retryWhen(Retry.fixedDelay(5, Duration.ofSeconds(30)))
             .block()
 
         if (response != null) {
