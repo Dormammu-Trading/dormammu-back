@@ -3,6 +3,7 @@ package com.dormammu.tradingsimulation.kis.foreign.service
 import com.dormammu.tradingsimulation.kis.constant.KisApiUrl
 import com.dormammu.tradingsimulation.kis.foreign.domain.StockInfo
 import com.dormammu.tradingsimulation.kis.foreign.dto.ForeignStockCurrentTradedPriceResponse
+import com.dormammu.tradingsimulation.kis.foreign.dto.ForeignStockTermTradedPriceResponse
 import com.dormammu.tradingsimulation.kis.foreign.dto.StockInfoWithSearchOption
 import io.github.oshai.kotlinlogging.KotlinLogging
 import org.springframework.http.HttpHeaders
@@ -44,18 +45,18 @@ class KisForeignStockCurrentPriceService(
         return foreignStockCurrentTradedPrice
     }
 
-    fun getForeignStockTermPrice(stockInfo: StockInfoWithSearchOption): ForeignStockCurrentTradedPriceResponse? {
+    fun getForeignStockTermPrice(stockInfo: StockInfoWithSearchOption): ForeignStockTermTradedPriceResponse? {
         logger.info { "stockInfo : $stockInfo "}
 
         val foreignStockTermTradedPriceRequest = stockInfo.getForeignStockTermTradedPriceRequest()
 
         val additionalHeader = HttpHeaders().apply{
-            set("tr_id", KisApiUrl.GET_CURRENT_TRADED_PRICE.transatcionId)
+            set("tr_id", KisApiUrl.GET_TERM_TRADED_PRICE.transatcionId)
         }
 
-        val foreignStockCurrentTradedPrice = webClient.get()
+        val foreignStockTermTradedPrice = webClient.get()
             .uri { builder ->
-                builder.path(KisApiUrl.GET_CURRENT_TRADED_PRICE.url)
+                builder.path(KisApiUrl.GET_TERM_TRADED_PRICE.url)
                     .queryParam("AUTH", foreignStockTermTradedPriceRequest.AUTH)
                     .queryParam("EXCD", foreignStockTermTradedPriceRequest.EXCD)
                     .queryParam("SYMB", foreignStockTermTradedPriceRequest.SYMB)
@@ -66,12 +67,12 @@ class KisForeignStockCurrentPriceService(
                     .build()
             }.headers{ headers -> headers.addAll(additionalHeader)}
             .retrieve()
-            .bodyToMono(ForeignStockCurrentTradedPriceResponse::class.java)
+            .bodyToMono(ForeignStockTermTradedPriceResponse::class.java)
             .block()
 
-        logger.info { "foreignStockCurrentTradedPrice : $foreignStockCurrentTradedPrice "}
+        logger.info { "foreignStockCurrentTradedPrice : $foreignStockTermTradedPrice "}
 
-        return foreignStockCurrentTradedPrice
+        return foreignStockTermTradedPrice
     }
 
 

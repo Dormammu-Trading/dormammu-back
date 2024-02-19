@@ -2,6 +2,7 @@ package com.dormammu.tradingsimulation.kis.foreign.controller
 
 import com.dormammu.tradingsimulation.kis.foreign.domain.StockInfo
 import com.dormammu.tradingsimulation.kis.foreign.dto.ForeignStockCurrentTradedPriceResponse
+import com.dormammu.tradingsimulation.kis.foreign.dto.ForeignStockTermTradedPriceResponse
 import com.dormammu.tradingsimulation.kis.foreign.dto.StockInfoWithSearchOption
 import com.dormammu.tradingsimulation.kis.foreign.service.KisForeignStockCurrentPriceService
 import io.github.oshai.kotlinlogging.KotlinLogging
@@ -16,7 +17,7 @@ private val logger = KotlinLogging.logger {}
 class KisForeignStockController(
     private val kisForeignStockCurrentPriceService: KisForeignStockCurrentPriceService
 ){
-    @PostMapping("/price")
+    @PostMapping("/current-price")
     fun getForeignStockCurrentTradedPrice(@RequestBody stockInfo: StockInfo): ForeignStockCurrentTradedPriceResponse? {
         logger.info { "stockInfo : $stockInfo "}
 
@@ -27,8 +28,8 @@ class KisForeignStockController(
         return foreignStockCurrentTradedPrice
     }
 
-    @PostMapping("/price")
-    fun getForeignStockTermTradedPrice(@RequestBody stockInfo: StockInfoWithSearchOption): ForeignStockCurrentTradedPriceResponse? {
+    @PostMapping("/term-price")
+    fun getForeignStockTermTradedPrice(@RequestBody stockInfo: StockInfoWithSearchOption): ForeignStockTermTradedPriceResponse? {
         logger.info { "stockInfo : $stockInfo "}
 
         val foreignStockTermTradedPrice = kisForeignStockCurrentPriceService.getForeignStockTermPrice(stockInfo)
