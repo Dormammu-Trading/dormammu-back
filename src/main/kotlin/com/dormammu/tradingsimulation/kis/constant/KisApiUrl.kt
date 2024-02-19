@@ -9,5 +9,10 @@ enum class KisApiUrl(
     GET_CURRENT_TRADED_PRICE(
         "/uapi/overseas-price/v1/quotations/price",
         "HHDFS00000300"
+    ),
+    GET_TERM_TRADED_PRICE(
+    "/uapi/overseas-price/v1/quotations/dailyprice",
+    "HHDFS76240000"
     )
+
 }
