@@ -41,7 +41,17 @@ dependencies {
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	annotationProcessor("org.projectlombok:lombok")
+
+	testImplementation("io.kotest.extensions:kotest-extensions-spring:1.1.3")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
+	testImplementation("com.squareup.okhttp3:mockwebserver:4.10.0")
+	testImplementation("io.projectreactor:reactor-test")
+	testImplementation("io.mockk:mockk:1.13.9")
+	testImplementation("io.kotest:kotest-assertions-core-jvm:5.7.0")
+	testImplementation("io.kotest:kotest-runner-junit5-jvm:5.7.0")
+	testImplementation("io.kotest:kotest-extensions-now:5.7.0")
+	testImplementation("io.kotest:kotest-runner-junit5:5.7.0")
+	testImplementation("io.kotest:kotest-property:5.7.0")
 }
 
 tasks.withType<KotlinCompile> {

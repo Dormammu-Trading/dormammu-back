@@ -1,4 +1,4 @@
-package com.dormammu.tradingsimulation.kis.foreign.domain
+package com.dormammu.tradingsimulation.kis.foreign.dto
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
